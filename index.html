@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>HTML Geolocation</h1>
+    <p>Click the button to get your coordinates.</p>
+
+    <button onclick="getLocation()">Try It</button>
+    <button id="stopBtn">Stop It</button>
+
+
+    <p id="demo"></p>
+
+    <script>
+        var newWindow = null;
+        var x = document.getElementById("demo");
+        x.innerHTML = "";
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(showPosition);
+            }
+            else if (navigator.geolocation) {
+                if (x) {
+                    navigator.geolocation.clearWatch(x);
+                }
+                watchId = navigator.geolocation.watchPosition(showPosition);
+            }
+            else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            var url = "http://maps.google.com/maps?q=" + lat + "," + long + "&zoom=15&size=400x300";
+            x.innerHTML = "Latitude: " + lat +
+                "<br>Longitude: " + long;
+            newWindow = window.open(url, "GeoWindow", "width=400,height=300", "target=_blank", "rel=noopener noreferrer");
+        }
+
+        function stopLocation() {
+            if (x) {
+                navigator.geolocation.clearWatch(x);
+                x.innerHTML = "";
+                x = null;
+            }
+        }
+
+        document.getElementById("stopBtn").addEventListener("click", stopLocation);
+
+        function handleErr(x) {
+            console.log(x);
+            switch (x.code) {
+                case 0:
+                    console.log("unknown error " + x.message);
+                    break;
+                case 1:
+                    console.log("permission denied " + x.message);
+                    break;
+                case 2:
+                    console.log("Pos unavialble" + x.message);
+                    break;
+                case 3:
+                    console.log("timeout --> " + x.message);
+                    break;
+
+            }
+        }
+    </script>
+
+</body>
+
+</html>
